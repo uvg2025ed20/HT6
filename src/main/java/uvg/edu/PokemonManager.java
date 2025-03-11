@@ -1,3 +1,4 @@
+// src/main/java/uvg/edu/PokemonManager.java
 package uvg.edu;
 
 import java.io.*;
@@ -8,22 +9,27 @@ public class PokemonManager {
     private Map<String, Pokemon> pokemonMap;
     private Set<String> userCollection = new HashSet<>();
 
-    public PokemonManager(String mapType) {
+    public PokemonManager(Integer mapType) {
         pokemonMap = MapFactory.getMap(mapType);
     }
 
     // Cargar datos desde CSV
     public void loadPokemonData(String filename) throws IOException {
+        if (!filename.endsWith(".csv")) {
+            throw new IllegalArgumentException("El archivo no es un CSV.");
+        }
+
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String line;
+        // Saltar la primera línea (encabezados)
+        br.readLine();
         while ((line = br.readLine()) != null) {
-            System.out.println("Leyendo línea: " + line); // Mensaje de depuración
             String[] data = line.split(",");
-            if (data.length >= 3) {
-                pokemonMap.put(data[0], new Pokemon(data[0], data[1], data[2]));
-                System.out.println("Pokémon agregado: " + data[0]); // Mensaje de depuración
-            } else {
-                System.out.println("Línea inválida: " + line); // Mensaje de depuración
+            if (data.length >= 8) {
+                String name = data[0];
+                String type1 = data[2];
+                String abilities = data[7];
+                pokemonMap.put(name, new Pokemon(name, type1, abilities));
             }
         }
         br.close();
@@ -43,7 +49,12 @@ public class PokemonManager {
 
     // Mostrar datos de un Pokémon
     public void showPokemon(String name) {
-        System.out.println(pokemonMap.getOrDefault(name, new Pokemon("No encontrado", "-", "-")));
+        Pokemon pokemon = pokemonMap.get(name);
+        if (pokemon != null) {
+            System.out.println(pokemon);
+        } else {
+            System.out.println("Pokémon no encontrado.");
+        }
     }
 
     // Mostrar Pokémon de la colección ordenados por Type1
@@ -63,24 +74,39 @@ public class PokemonManager {
         list.forEach(System.out::println);
     }
 
-    // Mostrar Pokémon por habilidad
+    // Buscar Pokémon por habilidad
     public void showByAbility(String ability) {
-        pokemonMap.values().stream()
-                .filter(p -> p.getAbility().equalsIgnoreCase(ability))
-                .forEach(System.out::println);
+        for (Pokemon pokemon : pokemonMap.values()) {
+            if (pokemon.getAbility().contains(ability)) {
+                System.out.println(pokemon);
+            }
+        }
     }
 
     // Guardar colección en archivo
     public void saveUserCollection() throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("collection.ser"));
-        oos.writeObject(userCollection);
-        oos.close();
+        PrintWriter pw = new PrintWriter(new FileWriter("collection.csv"));
+        for (String name : userCollection) {
+            Pokemon pokemon = pokemonMap.get(name);
+            if (pokemon != null) {
+                pw.println(pokemon.getName() + "," + pokemon.getType1() + "," + pokemon.getAbility());
+            }
+        }
+        pw.close();
     }
 
     // Cargar colección desde archivo
-    public void loadUserCollection() throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("collection.ser"));
-        userCollection = (Set<String>) ois.readObject();
-        ois.close();
+    public void loadUserCollection() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("collection.csv"));
+        String line;
+        userCollection.clear();
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            if (data.length >= 3) {
+                userCollection.add(data[0]);
+                pokemonMap.put(data[0], new Pokemon(data[0], data[1], data[2]));
+            }
+        }
+        br.close();
     }
 }

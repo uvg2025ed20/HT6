@@ -1,6 +1,5 @@
+// src/main/java/uvg/edu/Main.java
 package uvg.edu;
-
-import uvg.edu.PokemonManager;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -8,8 +7,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Seleccione el tipo de Mapa (HashMap, TreeMap, LinkedHashMap):");
-        String mapType = scanner.nextLine();
+        System.out.println("Seleccione el Mapa que Desea Utilizar");
+        System.out.println("1. HashMap");
+        System.out.println("2. TreeMap");
+        System.out.println("3. LinkedHashMap");
+        Integer mapType = scanner.nextInt();
+        scanner.nextLine();
 
         PokemonManager manager = new PokemonManager(mapType);
 
@@ -18,7 +21,7 @@ public class Main {
             String filePath = scanner.nextLine();
             manager.loadPokemonData(filePath);
             manager.loadUserCollection();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             System.out.println("Error cargando datos: " + e.getMessage());
         }
 
@@ -57,7 +60,7 @@ public class Main {
                     }
                     break;
                 case 7:
-                    System.out.println("Saliendo...");
+                    System.out.println("Se ha salido del programa");
                     scanner.close();
                     return;
                 default:
