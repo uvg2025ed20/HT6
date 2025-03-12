@@ -103,9 +103,12 @@
              * Show all Pokémon sorted by Type1.
              */
             public void printTodoSorteado() {
+                long startTime = System.nanoTime();
                 List<Pokemon> list = new ArrayList<>(pokemonMap.values());
                 list.sort(Comparator.comparing(Pokemon::getType1));
                 list.forEach(System.out::println);
+                long endTime = System.nanoTime();
+                System.out.println("printTodoSorteado took " + (endTime - startTime) + " ns");
             }
 
             /**
