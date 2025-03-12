@@ -60,6 +60,11 @@
                 } else {
                     userCollection.add(name);
                     System.out.println(name + " agregado a la colección.");
+                    try {
+                        guardarEnCollection();
+                    } catch (IOException e) {
+                        System.out.println("Error guardando colección: " + e.getMessage());
+                    }
                 }
             }
 
@@ -81,12 +86,17 @@
              * Show the user's collection sorted by Type1.
              */
             public void printCollectionSorteada() {
-                List<Pokemon> list = new ArrayList<>();
-                for (String name : userCollection) {
-                    list.add(pokemonMap.get(name));
+                try {
+                    cargarCollection();
+                    List<Pokemon> list = new ArrayList<>();
+                    for (String name : userCollection) {
+                        list.add(pokemonMap.get(name));
+                    }
+                    list.sort(Comparator.comparing(Pokemon::getType1));
+                    list.forEach(System.out::println);
+                } catch (IOException e) {
+                    System.out.println("Error cargando colección: " + e.getMessage());
                 }
-                list.sort(Comparator.comparing(Pokemon::getType1));
-                list.forEach(System.out::println);
             }
 
             /**
@@ -117,7 +127,7 @@
              * @throws IOException If an I/O error occurs.
              */
             public void guardarEnCollection() throws IOException {
-                PrintWriter pw = new PrintWriter(new FileWriter("collection.csv"));
+                PrintWriter pw = new PrintWriter(new FileWriter("src/collection.csv"));
                 for (String name : userCollection) {
                     Pokemon pokemon = pokemonMap.get(name);
                     if (pokemon != null) {
@@ -133,7 +143,7 @@
              * @throws IOException If an I/O error occurs.
              */
             public void cargarCollection() throws IOException {
-                BufferedReader br = new BufferedReader(new FileReader("collection.csv"));
+                BufferedReader br = new BufferedReader(new FileReader("src/collection.csv"));
                 String line;
                 userCollection.clear();
                 while ((line = br.readLine()) != null) {

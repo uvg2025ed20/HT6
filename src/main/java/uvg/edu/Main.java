@@ -39,7 +39,7 @@
 
                 // Main loop to handle user commands
                 while (true) {
-                    System.out.println("\n1. Agregar Pokémon a la colección\n2. Mostrar datos de un Pokémon\n3. Mostrar colección ordenada por Type1\n4. Mostrar todos los Pokémon ordenados por Type1\n5. Buscar Pokémon por habilidad\n6. Guardar colección\n7. Salir");
+                    System.out.println("\n1. Agregar Pokémon a la colección\n2. Mostrar datos de un Pokémon\n3. Mostrar colección ordenada por Type1\n4. Mostrar todos los Pokémon ordenados por Type1\n5. Buscar Pokémon por habilidad\n6. Salir");
                     int choice = scanner.nextInt();
                     scanner.nextLine();
 
@@ -71,14 +71,6 @@
                             manager.printPorHabilidad(ability);
                             break;
                         case 6:
-                            // Save the user's collection to a file
-                            try {
-                                manager.guardarEnCollection();
-                            } catch (IOException e) {
-                                System.out.println("Error guardando colección: " + e.getMessage());
-                            }
-                            break;
-                        case 7:
                             // Exit the program
                             System.out.println("Se ha salido del programa");
                             scanner.close();
