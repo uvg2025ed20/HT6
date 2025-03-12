@@ -1,4 +1,4 @@
-// src/main/java/uvg/edu/PokemonManager.java
+// src/main/java/uvg/edu/ManejoPokemones.java
         package uvg.edu;
 
         import java.io.*;
@@ -7,16 +7,16 @@
         /**
          * Class to manage Pokémon and user collections.
          */
-        public class PokemonManager {
+        public class ManejoPokemones {
             private Map<String, Pokemon> pokemonMap;
             private Set<String> userCollection = new HashSet<>();
 
             /**
-             * Constructor for PokemonManager.
+             * Constructor for ManejoPokemones.
              *
              * @param mapType The type of map to use (1 for HashMap, 2 for TreeMap, 3 for LinkedHashMap).
              */
-            public PokemonManager(Integer mapType) {
+            public ManejoPokemones(Integer mapType) {
                 pokemonMap = MapFactory.getMap(mapType);
             }
 
@@ -26,7 +26,7 @@
              * @param filename The path to the CSV file.
              * @throws IOException If an I/O error occurs.
              */
-            public void loadPokemonData(String filename) throws IOException {
+            public void cargarPokemones(String filename) throws IOException {
                 if (!filename.endsWith(".csv")) {
                     throw new IllegalArgumentException("El archivo no es un CSV.");
                 }
@@ -52,7 +52,7 @@
              *
              * @param name The name of the Pokémon to add.
              */
-            public void addPokemonToCollection(String name) {
+            public void agregarAColection(String name) {
                 if (!pokemonMap.containsKey(name)) {
                     System.out.println("Error: Pokémon no encontrado.");
                 } else if (userCollection.contains(name)) {
@@ -68,7 +68,7 @@
              *
              * @param name The name of the Pokémon to show.
              */
-            public void showPokemon(String name) {
+            public void printPokemon(String name) {
                 Pokemon pokemon = pokemonMap.get(name);
                 if (pokemon != null) {
                     System.out.println(pokemon);
@@ -80,7 +80,7 @@
             /**
              * Show the user's collection sorted by Type1.
              */
-            public void showUserCollectionSorted() {
+            public void printCollectionSorteada() {
                 List<Pokemon> list = new ArrayList<>();
                 for (String name : userCollection) {
                     list.add(pokemonMap.get(name));
@@ -92,7 +92,7 @@
             /**
              * Show all Pokémon sorted by Type1.
              */
-            public void showAllSorted() {
+            public void printTodoSorteado() {
                 List<Pokemon> list = new ArrayList<>(pokemonMap.values());
                 list.sort(Comparator.comparing(Pokemon::getType1));
                 list.forEach(System.out::println);
@@ -103,7 +103,7 @@
              *
              * @param ability The ability to search for.
              */
-            public void showByAbility(String ability) {
+            public void printPorHabilidad(String ability) {
                 for (Pokemon pokemon : pokemonMap.values()) {
                     if (pokemon.getAbility().contains(ability)) {
                         System.out.println(pokemon);
@@ -116,7 +116,7 @@
              *
              * @throws IOException If an I/O error occurs.
              */
-            public void saveUserCollection() throws IOException {
+            public void guardarEnCollection() throws IOException {
                 PrintWriter pw = new PrintWriter(new FileWriter("collection.csv"));
                 for (String name : userCollection) {
                     Pokemon pokemon = pokemonMap.get(name);
@@ -132,7 +132,7 @@
              *
              * @throws IOException If an I/O error occurs.
              */
-            public void loadUserCollection() throws IOException {
+            public void cargarCollection() throws IOException {
                 BufferedReader br = new BufferedReader(new FileReader("collection.csv"));
                 String line;
                 userCollection.clear();

@@ -1,4 +1,3 @@
-// src/main/java/uvg/edu/Main.java
         package uvg.edu;
 
         import java.io.IOException;
@@ -21,14 +20,19 @@
                 Integer mapType = scanner.nextInt();
                 scanner.nextLine();
 
-                PokemonManager manager = new PokemonManager(mapType);
+                ManejoPokemones manager = new ManejoPokemones(mapType);
 
                 try {
-                    // Prompt user to enter the file path for the CSV file
-                    System.out.println("Ingrese la ruta completa del archivo CSV:");
-                    String filePath = scanner.nextLine();
-                    manager.loadPokemonData(filePath);
-                    manager.loadUserCollection();
+                    System.out.println("Desea usar un CSV de pokemones predefinido? (s/n)");
+                    String csvPred = scanner.nextLine();
+                    if (csvPred.equals("s")) {
+                        manager.cargarPokemones("src/pokemon_data_pokeapi.csv");
+                    } else {
+                        System.out.println("Ingrese la ruta completa del archivo CSV:");
+                        String filePath = scanner.nextLine();
+                        manager.cargarPokemones(filePath);
+                        manager.cargarCollection();
+                    }
                 } catch (IOException e) {
                     System.out.println("Error cargando datos: " + e.getMessage());
                 }
@@ -44,32 +48,32 @@
                             // Add a Pokemon to the user's collection
                             System.out.println("Ingrese el nombre del Pokémon:");
                             String name = scanner.nextLine();
-                            manager.addPokemonToCollection(name);
+                            manager.agregarAColection(name);
                             break;
                         case 2:
                             // Show data of a specific Pokemon
                             System.out.println("Ingrese el nombre del Pokémon:");
                             name = scanner.nextLine();
-                            manager.showPokemon(name);
+                            manager.printPokemon(name);
                             break;
                         case 3:
                             // Show the user's collection sorted by Type1
-                            manager.showUserCollectionSorted();
+                            manager.printCollectionSorteada();
                             break;
                         case 4:
                             // Show all Pokemon sorted by Type1
-                            manager.showAllSorted();
+                            manager.printTodoSorteado();
                             break;
                         case 5:
                             // Search for Pokemon by ability
                             System.out.println("Ingrese la habilidad del Pokémon:");
                             String ability = scanner.nextLine();
-                            manager.showByAbility(ability);
+                            manager.printPorHabilidad(ability);
                             break;
                         case 6:
                             // Save the user's collection to a file
                             try {
-                                manager.saveUserCollection();
+                                manager.guardarEnCollection();
                             } catch (IOException e) {
                                 System.out.println("Error guardando colección: " + e.getMessage());
                             }

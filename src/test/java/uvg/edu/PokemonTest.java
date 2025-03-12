@@ -1,80 +1,100 @@
-// src/test/java/uvg/edu/PokemonManagerTest.java
-package uvg.edu;
+    package uvg.edu;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+    import org.junit.jupiter.api.BeforeEach;
+    import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
+    import java.io.IOException;
+    import java.nio.file.Files;
+    import java.nio.file.Paths;
+    import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+    import static org.junit.jupiter.api.Assertions.*;
 
-class PokemonManagerTest {
-    private PokemonManager manager;
+    /**
+     * Test class for the ManejoPokemones class.
+     */
+    class PokemonManagerTest {
+        private ManejoPokemones manager;
 
-    @BeforeEach
-    void setUp() {
-        manager = new PokemonManager(1); // Assuming 1 corresponds to a valid map type
+        /**
+         * Sets up the test environment before each test.
+         */
+        @BeforeEach
+        void setUp() {
+            manager = new ManejoPokemones(1);
+        }
+
+        /**
+         * Tests that a Pokemon is added to the collection.
+         * @throws IOException if an I/O error occurs.
+         */
+        @Test
+        void addPokemonToCollectionAddsPokemon() throws IOException {
+            manager.cargarPokemones("src/pokemon_data_pokeapi.csv");
+            manager.agregarAColection("Pikachu");
+        }
+
+        /**
+         * Tests that adding a non-existent Pokemon to the collection is handled correctly.
+         */
+        @Test
+        void addPokemonToCollectionHandlesNonExistentPokemon() {
+            manager.agregarAColection("prueba");
+        }
+
+        /**
+         * Tests that a specific Pokemon is displayed correctly.
+         * @throws IOException if an I/O error occurs.
+         */
+        @Test
+        void showPokemonDisplaysCorrectPokemon() throws IOException {
+            manager.cargarPokemones("src/pokemon_data_pokeapi.csv");
+            manager.printPokemon("Pikachu");
+        }
+
+        /**
+         * Tests that the user's collection is displayed sorted correctly.
+         * @throws IOException if an I/O error occurs.
+         */
+        @Test
+        void showUserCollectionSortedDisplaysSortedCollection() throws IOException {
+            manager.cargarPokemones("src/pokemon_data_pokeapi.csv");
+            manager.agregarAColection("Pikachu");
+            manager.agregarAColection("Bulbasaur");
+            manager.printCollectionSorteada();
+        }
+
+        /**
+         * Tests that all Pokemon are displayed sorted correctly.
+         * @throws IOException if an I/O error occurs.
+         */
+        @Test
+        void showAllSortedDisplaysAllPokemonSorted() throws IOException {
+            manager.cargarPokemones("src/pokemon_data_pokeapi.csv");
+            manager.printTodoSorteado();
+        }
+
+        /**
+         * Tests that Pokemon with a specific ability are displayed correctly.
+         * @throws IOException if an I/O error occurs.
+         */
+        @Test
+        void showByAbilityDisplaysCorrectPokemon() throws IOException {
+            manager.cargarPokemones("src/pokemon_data_pokeapi.csv");
+            manager.printPorHabilidad("Static");
+        }
+
+        /**
+         * Tests that the user's collection is saved correctly.
+         * @throws IOException if an I/O error occurs.
+         */
+        @Test
+        void saveUserCollectionSavesCorrectly() throws IOException {
+            manager.cargarPokemones("src/pokemon_data_pokeapi.csv");
+            manager.agregarAColection("Pikachu");
+            manager.guardarEnCollection();
+            List<String> lines = Files.readAllLines(Paths.get("collection.csv"));
+            lines.forEach(System.out::println); // Debug print
+            assertTrue(lines.contains("Pikachu,Electric,Static"));
+        }
     }
-
-    @Test
-    void addPokemonToCollectionAddsPokemon() throws IOException {
-        manager.loadPokemonData("src/pokemon_data_pokeapi.csv");
-        manager.addPokemonToCollection("Pikachu");
-        // Verify by checking the output or internal state if possible
-    }
-
-    @Test
-    void addPokemonToCollectionHandlesNonExistentPokemon() {
-        manager.addPokemonToCollection("NonExistent");
-        // Verify by checking the output or internal state if possible
-    }
-
-    @Test
-    void showPokemonDisplaysCorrectPokemon() throws IOException {
-        manager.loadPokemonData("src/pokemon_data_pokeapi.csv");
-        manager.showPokemon("Pikachu");
-        // Verify output manually or use a custom output stream to capture the output
-    }
-
-    @Test
-    void showUserCollectionSortedDisplaysSortedCollection() throws IOException {
-        manager.loadPokemonData("src/pokemon_data_pokeapi.csv");
-        manager.addPokemonToCollection("Pikachu");
-        manager.addPokemonToCollection("Bulbasaur");
-        manager.showUserCollectionSorted();
-        // Verify output manually or use a custom output stream to capture the output
-    }
-
-    @Test
-    void showAllSortedDisplaysAllPokemonSorted() throws IOException {
-        manager.loadPokemonData("src/pokemon_data_pokeapi.csv");
-        manager.showAllSorted();
-        // Verify output manually or use a custom output stream to capture the output
-    }
-
-    @Test
-    void showByAbilityDisplaysCorrectPokemon() throws IOException {
-        manager.loadPokemonData("src/pokemon_data_pokeapi.csv");
-        manager.showByAbility("Static");
-        // Verify output manually or use a custom output stream to capture the output
-    }
-
-    @Test
-    void saveUserCollectionSavesCorrectly() throws IOException {
-        manager.loadPokemonData("src/pokemon_data_pokeapi.csv");
-        manager.addPokemonToCollection("Pikachu");
-        manager.saveUserCollection();
-        List<String> lines = Files.readAllLines(Paths.get("src/pokemon_data_pokeapi.csv"));
-        assertTrue(lines.contains("Pikachu,Electric,Static"));
-    }
-
-    @Test
-    void loadUserCollectionLoadsCorrectly() throws IOException {
-        Files.write(Paths.get("src/pokemon_data_pokeapi.csv"), List.of("Pikachu,Electric,Static"));
-        manager.loadUserCollection();
-        // Verify by checking the output or internal state if possible
-    }
-}
